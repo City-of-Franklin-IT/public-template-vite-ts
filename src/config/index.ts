@@ -1,0 +1,6 @@
+export const APP_BASE = '/recalls'
+export const APP_TITLE = 'Latest Fire and Explosion Hazard Product Recalls from the'
+export const APP_TITLE_ORG = 'U.S. Consumer Product Safety Commission'
+export const APP_TITLE_ORG_URL = 'https://www.saferproducts.gov/'
+export const NODE_ENV = import.meta.env.MODE as 'development' | 'test' | 'production'
+export const CPSC_BASE_URL = 'https://www.saferproducts.gov/RestWebServices/Recall'

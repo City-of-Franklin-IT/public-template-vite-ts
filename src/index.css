@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: cof --default;
+}
+@plugin "daisyui/theme" {
+  name: "cof";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #e6e6e6;
+  --color-base-300: #b8b8b8;
+  --color-base-content: #1C1C1C;
+  --color-primary: #2b7281;
+  --color-primary-content: #ffffff;
+  --color-secondary: #dab348;
+  --color-secondary-content: #1C1C1C;
+  --color-accent: #534AB7;
+  --color-accent-content: #ffffff;
+  --color-neutral: #1C1C1C;
+  --color-neutral-content: #ffffff;
+  --color-info: #558e9a;
+  --color-info-content: #ffffff;
+  --color-success: #0F6E56;
+  --color-success-content: #E1F5EE;
+  --color-warning: #854F0B;
+  --color-warning-content: #FAEEDA;
+  --color-error: #993C1D;
+  --color-error-content: #FAECE7;
+
+  --radius-box: 16px;
+  --radius-field: 10px;
+}
+
+@tailwind utilities;
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition,
+::view-transition-old(root),
+::view-transition-new(root) {
+  background: #e6e6e6;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+}
+
+::view-transition-old(root) {
+  animation-name: slide-out-right;
+}
+
+::view-transition-new(root) {
+  animation-name: slide-in-left;
+}
+
+@keyframes slide-out-left {
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-out-right {
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  background: #e6e6e6;
+  color: #1C1C1C;
+}
+
+button, input, .btn {
+  font-family: 'DM Sans', sans-serif;
+}
+
+::view-transition-group(root) {
+  background: #e6e6e6;
+}
