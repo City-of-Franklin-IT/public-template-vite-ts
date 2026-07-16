@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { ToastContainer } from "react-toastify"
 import { APP_BASE } from "./config"
 
 // Components
@@ -21,7 +20,6 @@ function App() {
           </Route>
         </Routes>
         <ReactQueryDevtools initialIsOpen={false} />
-        <ToastContainer />
       </Router>
     </QueryClientProvider>
   )

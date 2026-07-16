@@ -1,6 +1,6 @@
-# FFD Unit Status
+# FFD Recalls
 
-Real-time vehicle status tracking dashboard for the Franklin Fire Department.
+Public/display dashboard for the Franklin Fire Department showing CPSC product recalls filtered to fire and explosion hazards.
 
 ![React](https://img.shields.io/badge/React-19.2-61dafb?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?logo=typescript)
@@ -9,32 +9,26 @@ Real-time vehicle status tracking dashboard for the Franklin Fire Department.
 
 ## Overview
 
-Real-time vehicle status tracking dashboard for the Franklin Fire Department. Displays current status, location, and availability of fire department units across all stations using React 19, TypeScript, and ArcGIS mapping. Features live tracking, interactive maps, and comprehensive filtering capabilities for monitoring emergency response resources.
+An informational, public-facing page — no authentication — that surfaces CPSC (Consumer Product Safety Commission) recall data relevant to fire and explosion hazards for the Franklin Fire Department. Built with React 19, TypeScript, and Vite.
 
 ## Features
 
-- **Live Vehicle Tracking**: Real-time status updates for all FFD vehicles with 5-minute refresh intervals
-- **Interactive Map**: ArcGIS-powered map displaying vehicle locations and movements
-- **Status Monitoring**: Track vehicle status (Available, In Quarters, On Scene, Out of Service, Enroute, Staged)
-- **Station Organization**: View units by station (Stations 1-8 and Reserves)
-- **Capability Filtering**: Filter vehicles by capabilities (Engine, Ladder, ALS/BLS Units, Hazmat, Rescue, etc.)
-- **Out of Service Tracking**: Monitor OOS vehicles with detailed reason tracking
-- **Location Details**: Current location and destination information for each unit
-- **API Documentation**: In-app API documentation viewer for authenticated users
-- **Azure AD Authentication**: Secure access with Microsoft authentication integration
+- **Latest Recalls**: Shows the 6 most recent fire/explosion-related recalls published in the last 30 days
+- **Search**: Query the CPSC Recall API and filter results to fire/explosion hazards client-side
+- **Fire/Explosion Filtering**: Client-side keyword filtering (`fire`, `explosion`, `explode`, `flammab`, `ignit`, `burn hazard`) since the CPSC API's hazard category param isn't exposed for free-text search
+- **Resilient Fetching**: Detects and retries CPSC's sentinel error responses (`RecallID: 0`) via TanStack Query's automatic retry
 
 ## Prerequisites
 
 - **Node.js**: 18.x or higher
 - **npm**: 9.x or higher
-- **Azure AD Application**: Required for authentication in production
 
 ## Installation
 
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd ffd-unit-status-vite-ts
+cd ffd-recalls-vite-ts
 
 # Install dependencies
 npm install
@@ -42,34 +36,19 @@ npm install
 
 ## Configuration
 
-### Environment Variables
-
-The application uses configuration in `src/config/index.ts`:
+Config lives in `src/config/index.ts`:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `NODE_ENV` | Environment mode (`development` or `production`) | - |
-| `APP_BASE` | Base path for routing | `/unit-status` |
-| `CLIENT_ID` | Azure AD application ID | Required for production |
-| `API_URL` | API endpoint (set in `AppActions.ts`) | Environment-based |
+| `APP_BASE` | Base path for routing | `/recalls` |
+| `CPSC_BASE_URL` | CPSC Recall REST API base URL | `https://www.saferproducts.gov/RestWebServices/Recall` |
 
-### Development Mode
-
-To work locally without authentication, set `NODE_ENV = 'development'` in `src/config/index.ts`.
-
-### API Endpoints
-
-- **Production**: https://fireapps.franklintn.gov/api/v2/ffd/capabilities
-- **Development**: https://cofasv38.franklin-gov.com/api/v2/ffd/capabilities
-- **API Documentation**: https://dev.franklintn.gov/api/v2/ffd/api-docs
-- **API Repository**: [ffd-api-ts](https://github.com/City-of-Franklin-IT/ffd-api-ts)
-
-**Data Source**: `[GISDBASV02].[LiveFeeds]` database
+No API key or authentication is required — CORS is open on the CPSC API (`access-control-allow-origin: *`), so it's called directly from the browser.
 
 ## Usage
 
 ```bash
-# Start development server on port 6000
+# Start development server on port 6002
 npm run dev
 
 # Build for production
@@ -83,15 +62,11 @@ npm run preview
 
 - **Framework**: React 19 with TypeScript 5.8
 - **Build Tool**: Vite 7
-- **Mapping**: ArcGIS Core 4.30
-- **State Management**:
-  - TanStack Query (React Query) for server state
-  - React Context + useReducer for UI state
-- **Authentication**: Azure MSAL (Browser + React)
+- **State Management**: TanStack Query (React Query) for server state
 - **Routing**: React Router 7
 - **Styling**: Tailwind CSS 4 + DaisyUI
-- **UI Components**: Mobiscroll React
-- **Animations**: Motion
+- **Animations**: Motion (page transitions)
+- **Error Handling**: react-error-boundary, react-toastify
 - **Testing**: Vitest + React Testing Library
 
 ## Project Structure
@@ -100,59 +75,34 @@ npm run preview
 src/
 ├── components/
 │   ├── layout/          # Header, Footer, Layout components
-│   ├── vehicles/        # Vehicle-related components
-│   │   ├── containers/  # VehiclesContainer, FiltersContainer
-│   │   ├── filters/     # Station, Capability, OOS filters
-│   │   ├── map/         # ArcGIS map integration
-│   │   └── tables/      # Vehicle data tables
-│   └── icons/           # Icon components
+│   └── recalls/         # Recall-related components
+│       ├── containers/  # RecallsContainer
+│       ├── cards/       # LatestRecallsSection
+│       ├── forms/       # SearchForm
+│       └── tables/      # RecallsTable
 ├── context/
-│   ├── App/             # Application state (filters, selections)
-│   │   ├── context.tsx  # Context + useReducer setup
-│   │   ├── AppActions.ts # State actions
-│   │   └── types.ts     # Vehicle and state types
-│   └── Auth/            # Azure MSAL authentication
-│       └── hooks/       # AuthProvider and token management
-├── pages/
-│   ├── Home/            # Main page with vehicle data
-│   │   └── hooks.ts     # TanStack Query hooks
-│   └── Docs/            # API documentation viewer
-├── helpers/
-│   └── hooks.ts         # useGetToken for auth
-├── utils/               # Error boundaries, loading states
+│   └── App/             # Application state and API integration
+│       ├── AppActions.ts # searchRecalls API function
+│       └── AppTypes.ts  # Recall and API types
+├── utils/
+│   ├── recalls.ts       # Fire/explosion hazard filtering
+│   └── PageWrapper/     # Page transition animation
+├── pages/               # Route-level page components
 └── config/
     └── index.ts         # Environment configuration
 ```
 
 ## Architecture
 
-### State Management
+### Fire/Explosion Filtering
 
-**Global UI State** (`src/context/App/context.tsx`):
-- React Context + useReducer pattern
-- Manages filters: station, capability, OOS, stale
-- Manages map selection state
-- Wrapped around `/home` route only
-
-**Server State** (TanStack Query):
-- API data fetching and caching
-- 5-minute automatic refetch interval
-- Query hooks in page-level `hooks.ts` files
-
-### Authentication Flow
-
-- Azure MSAL integration for production
-- Development mode bypasses auth when `NODE_ENV === 'development'`
-- Token management with automatic refresh
-- Special Edge browser handling with popup-based acquisition
+`src/utils/recalls.ts` exports `isFireOrExplosionHazard` / `filterFireOrExplosionRecalls`, which check each recall's `Title` and `Hazards[].Name` against a small set of terms. A bare `burn` term is intentionally excluded — it produced false positives (e.g. "chemical burns" from battery-ingestion recalls). This filter is applied to both the latest-recalls section and all search results, regardless of search params.
 
 ### Data Flow
 
-1. `useGetVehicles` hook fetches data via TanStack Query
-2. Data flows to `VehiclesContainer`
-3. AppContext filters applied in component hooks
-4. Filtered data rendered in map and table components
-5. User interactions dispatch actions to update AppContext
+1. `useGetLatestRecalls` (`RecallsContainer/hooks.ts`) fetches recalls published in the last 30 days on mount, filters to fire/explosion, sorts by most recent, and takes the top 6
+2. `useSearchRecalls` runs only after a search is submitted (`enabled: !!params`), applying the same fire/explosion filter to whatever the CPSC API returns
+3. Search state lives in `SearchForm`'s local `useState`; submitted params are lifted to `RecallsContainer`
 
 ### Path Aliases
 
@@ -174,21 +124,10 @@ Components follow a consistent structure:
 ```
 ComponentName/
 ├── index.tsx         # Main component export
-├── components.tsx    # Sub-components
-├── hooks.ts         # Component-specific hooks
-└── utils.ts         # Component-specific utilities
+├── components.tsx    # Sub-components (if needed)
+├── hooks.ts          # Component-specific hooks
+└── utils.ts          # Component-specific utilities
 ```
-
-## Vehicle Capabilities
-
-The system tracks various vehicle types and capabilities:
-- Engine, Ladder, Tower (100 FT)
-- ALS/BLS Units
-- Heavy Rescue, Light Extrication
-- Hazmat, Hazmat Truck
-- Water Rescue, Boat
-- Brush, Air Truck, Pumper Tanker
-- Battalion Chief, District Captain
 
 ## Development
 
@@ -208,11 +147,8 @@ npm test -- --ui
 - Vitest with jsdom environment
 - React Testing Library for component tests
 - Setup file: `src/test/setup.ts`
-- Test UI available via `@vitest/ui`
 
 ## Deployment
-
-**Production URL**: https://fireapps.franklintn.gov/unit-status
 
 ```bash
 # Build and deploy to production server
@@ -220,13 +156,8 @@ npm run build
 npm run deploy
 ```
 
-The deploy command uses SCP to transfer build artifacts to the production server (`cofasv32`).
+The deploy command uses SCP to transfer build artifacts to the production server (`cofasv03`).
 
 ## Routes
 
-- `/` - Login page
-- `/home` - Main application dashboard
-- `/docs` - API documentation viewer
-- `/*` - Redirect handler
-
-All routes use basename `/unit-status`.
+Single route (`/`) — the recalls dashboard, wrapped in `Layout`. All routes use basename `/recalls`.

@@ -4,7 +4,7 @@ import { filterFireOrExplosionRecalls, sortByRecallDateDesc } from "@/utils/reca
 import { daysAgo } from "./utils"
 
 export const useHandleRecallsContainer = () => {
-  const recalls = useGetLatestRecalls()
+  const recalls = useGetRecalls()
   const latestRecalls = useGetLatestRecalls()
 
   const recallsProps = {
