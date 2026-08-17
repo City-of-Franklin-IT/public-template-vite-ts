@@ -1,8 +1,10 @@
-import { Link } from 'react-router'
+import { useAuth } from "@/context/Auth/AuthContext"
 import ErrorBoundary from "@/utils/ErrorBoundary"
 import PageWrapper from "@/utils/PageWrapper"
 
 function Home() {
+  const { user } = useAuth()
+
   return (
     <ErrorBoundary>
       <PageWrapper>
@@ -11,15 +13,27 @@ function Home() {
             {/* Header */}
             <div className="space-y-4">
               <h1 className="text-4xl md:text-5xl font-bold">
-                Welcome to Public Template
+                Welcome to Parent Template
               </h1>
               <p className="text-xl text-base-content/70">
-                A professional React 19 + TypeScript template for public-facing applications
+                A professional React 19 + TypeScript template for internal applications with Azure Entra authentication
               </p>
+              {user && (
+                <p className="text-lg text-primary">
+                  Signed in as <strong>{user.name}</strong>
+                </p>
+              )}
             </div>
 
             {/* Features Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
+              <div className="card bg-base-200">
+                <div className="card-body">
+                  <h2 className="card-title text-lg">🔐 Authentication</h2>
+                  <p className="text-sm">Azure Entra ID with MSAL React integration</p>
+                </div>
+              </div>
+
               <div className="card bg-base-200">
                 <div className="card-body">
                   <h2 className="card-title text-lg">🏗️ Architecture</h2>
@@ -31,13 +45,6 @@ function Home() {
                 <div className="card-body">
                   <h2 className="card-title text-lg">🎨 Styling</h2>
                   <p className="text-sm">Tailwind CSS 4 with DaisyUI components</p>
-                </div>
-              </div>
-
-              <div className="card bg-base-200">
-                <div className="card-body">
-                  <h2 className="card-title text-lg">🧪 Testing</h2>
-                  <p className="text-sm">Vitest + React Testing Library included</p>
                 </div>
               </div>
 
@@ -74,7 +81,7 @@ function Home() {
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold">Built With</h3>
               <div className="flex flex-wrap justify-center gap-2">
-                {['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'DaisyUI', 'React Router', 'TanStack Query'].map((tech) => (
+                {['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'DaisyUI', 'React Router', 'TanStack Query', 'Azure Entra ID'].map((tech) => (
                   <span key={tech} className="badge badge-lg">{tech}</span>
                 ))}
               </div>

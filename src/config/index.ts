@@ -10,10 +10,10 @@
 export const APP_BASE = '/'
 
 // Application title - displayed in browser tab and header
-export const APP_TITLE = 'Public Template'
+export const APP_TITLE = 'Parent Template'
 
 // Application description
-export const APP_DESCRIPTION = 'A professional public-facing application template'
+export const APP_DESCRIPTION = 'A professional internal application template with Azure Entra authentication'
 
 // Organization name (optional)
 export const ORG_NAME = 'City of Franklin'

@@ -1,5 +1,5 @@
 {
-  "name": "public-template-vite-ts",
+  "name": "parent-template-vite-ts",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -11,6 +11,8 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@azure/msal-browser": "^4.30.0",
+    "@azure/msal-react": "^3.0.6",
     "@hotwired/turbo": "^8.0.18",
     "@tanstack/react-query": "^5.90.2",
     "@tanstack/react-query-devtools": "^5.90.2",
