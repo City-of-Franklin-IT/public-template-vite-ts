@@ -28,75 +28,6 @@ npm run build
 
 When auditing, reviewing, or modifying this codebase, use `/opt/claude-standards/react` and `/opt/claude-standards/typescript` as guides and templates.
 
-## Architecture
-
-### Component Organization
-
-All components follow a consistent structure pattern:
-
-```
-ComponentName/
-├── index.tsx         # Main component export
-├── components.tsx    # Sub-components (if needed)
-├── hooks.ts          # Component-specific hooks
-├── utils.ts          # Component-specific utilities
-└── test/
-    └── index.spec.tsx  # Component tests
-```
-
-Benefits of this structure:
-- **Colocation**: Component logic stays together
-- **Scalability**: Easy to add sub-components or utilities
-- **Testability**: Tests live alongside code
-- **Readability**: Clear separation of concerns
-
-### Component Hierarchy
-
-The template demonstrates a typical component hierarchy:
-
-```
-Layout                          # Main layout wrapper
-├── Banner                      # Header/navigation
-├── PageWrapper                 # Page transition animation
-│   └── [Page Content]
-│       └── Container           # Smart component (data fetching, state)
-│           ├── Cards           # Presentational components
-│           └── Forms           # Form components
-└── Footer                      # Footer
-```
-
-**Key concepts:**
-- **Containers**: Smart components that manage state and data fetching (in `containers/`)
-- **Cards**: Presentational components that display data (in `cards/`)
-- **Forms**: Form components for user input (in `forms/`)
-- **Layout**: Structural components (headers, footers, wrappers)
-
-### Data Flow Patterns
-
-#### Pattern 1: Server State with TanStack Query
-```typescript
-// Fetch data from an API using React Query
-const { data, isLoading, error } = useQuery({
-  queryKey: ['items'],
-  queryFn: () => AppActions.getItems(),
-});
-```
-
-#### Pattern 2: Component State for Forms
-```typescript
-// Local state for form inputs
-const [formData, setFormData] = useState({ name: '' });
-
-// Lift state to container when needed for sharing
-// Then pass down via props to presentational components
-```
-
-#### Pattern 3: Context for App-Wide State
-```typescript
-// Use AppContext (in src/context/App/) for global state
-// Extend AppTypes.ts and add to context provider as needed
-```
-
 ### Path Aliases
 
 Configured in `vite.config.ts`, `vitest.config.ts`, and `tsconfig.app.json`:
@@ -167,48 +98,20 @@ Extend this file with any additional configuration your app needs.
 - Use semantic queries (`getByRole`, `getByLabelText`) over `getByTestId`
 - Mock API calls using `vi.mock()` or `MSW` (Mock Service Worker)
 
-### Styling
-
-**Tailwind CSS 4** with **DaisyUI** components:
-- Utility-first CSS framework (Tailwind) for styling
-- Pre-built component library (DaisyUI) for common UI elements
-- Dark mode support built-in via CSS custom properties
-
-**To customize:**
-1. **Themes**: Edit `tailwind.config.ts` to choose/customize DaisyUI themes
-2. **Colors**: Extend `tailwind.config.ts` with custom Tailwind colors
-3. **Spacing**: Modify Tailwind's spacing scale in `tailwind.config.ts`
-
-**Color consistency:**
-- Use DaisyUI's semantic colors: `bg-primary`, `text-secondary`, etc.
-- Avoid hardcoded hex colors — use Tailwind utilities
-- Document any custom color schemes in your project's CLAUDE.md
-
-### Animations
-
-Motion library is included for page transition animations via `PageWrapper`.
-
-```typescript
-// Use PageWrapper for smooth page transitions
-<PageWrapper>
-  <YourPageContent />
-</PageWrapper>
-```
 
 ## Template Customization Checklist
 
 When using this template for a new project:
 
 - [ ] Update `package.json` name, version, and scripts
-- [ ] Remove `src/components/example/` directory
-- [ ] Update `src/pages/Home/` or replace with your landing page
-- [ ] Update `src/components/layout/Banner/` with your header
-- [ ] Update `src/components/layout/Footer/` with your footer
-- [ ] Define your API types in `src/context/App/AppTypes.ts`
-- [ ] Implement your API functions in `src/context/App/AppActions.ts`
+- [ ] Update `src/pages/Home/` with your landing page
+- [ ] Customize `src/components/layout/Banner/` (header/navigation)
+- [ ] Customize `src/components/layout/Footer/` (footer)
+- [ ] Define your API types in `src/context/App/AppTypes.ts` (if needed)
+- [ ] Implement your API functions in `src/context/App/AppActions.ts` (if needed)
 - [ ] Add your routes to `src/App.tsx`
 - [ ] Update `src/config/index.ts` with your configuration
-- [ ] Update this `CLAUDE.md` with project-specific architecture notes
+- [ ] Update this `CLAUDE.md` with project-specific notes
 - [ ] Update `README.md` to describe your application
 - [ ] Run `npm install` and `npm test` to verify setup
 
@@ -247,55 +150,6 @@ Built with modern browser features. Tested on:
 - Firefox latest
 - Safari latest
 
-## Common Patterns
-
-### Handling Form Submissions
-```typescript
-const [formData, setFormData] = useState({ name: '' });
-const mutation = useMutation({
-  mutationFn: AppActions.submitForm,
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['items'] });
-  },
-});
-
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  mutation.mutate(formData);
-};
-```
-
-### Creating a Modal/Dialog
-Use DaisyUI's modal component alongside state:
-```typescript
-const [isOpen, setIsOpen] = useState(false);
-
-return (
-  <>
-    <button onClick={() => setIsOpen(true)}>Open</button>
-    <input type="checkbox" id="modal" className="modal-toggle" checked={isOpen} onChange={() => {}} />
-    <div className="modal">
-      <div className="modal-box">
-        <h3>Modal Title</h3>
-        <div className="modal-action">
-          <button onClick={() => setIsOpen(false)}>Close</button>
-        </div>
-      </div>
-    </div>
-  </>
-);
-```
-
-### Breadcrumb Navigation
-```typescript
-import { useLocation } from 'react-router';
-
-function Breadcrumbs() {
-  const location = useLocation();
-  const paths = location.pathname.split('/').filter(Boolean);
-  // Build breadcrumb UI from paths
-}
-```
 
 ## Troubleshooting
 
