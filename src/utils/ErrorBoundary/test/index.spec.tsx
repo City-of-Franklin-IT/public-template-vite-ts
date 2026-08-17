@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest"
 import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router"
+import { APP_BASE } from "@/config"
 import ErrorBoundary from "../index"
 
 const mockNavigate = vi.fn()
@@ -46,7 +47,7 @@ describe("ErrorBoundary", () => {
       </MemoryRouter>
     )
     vi.advanceTimersByTime(50)
-    expect(mockNavigate).toHaveBeenCalledWith("/recalls")
+    expect(mockNavigate).toHaveBeenCalledWith(APP_BASE)
 
     consoleSpy.mockRestore()
     vi.useRealTimers()
