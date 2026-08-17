@@ -1,15 +1,14 @@
 /**
- * Banner Component
+ * Header Component
  *
- * Main header/banner for the application.
- * For parent template: includes user menu with logout functionality.
- * Customize with your organization's branding, title, and subtitle.
+ * Main header for the application.
+ * Customize with your organization's branding, title, and navigation.
  */
 
 import { APP_TITLE, APP_DESCRIPTION, ORG_NAME } from "@/config"
 import { useAuth } from "@/context/Auth/AuthContext"
 
-function Banner() {
+function Header() {
   const { user, logout } = useAuth()
 
   const handleLogout = async () => {
@@ -89,4 +88,4 @@ function Banner() {
   )
 }
 
-export default Banner
+export default Header
